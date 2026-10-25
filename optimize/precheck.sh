@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Is this device an Android TV (leanback), and is its WebView 80 or newer? The first step of optimize/run.sh.
+# Is this device an Android TV (leanback), and is its WebView 66 or newer? The first step of optimize/run.sh.
 #   optimize/precheck.sh              the check: prints what to tell the person; exit 3 if it is not an Android TV (stop)
 #   optimize/precheck.sh report       the «Device:» and «WebView:» lines for report.md
 #   optimize/precheck.sh webview-store   opens «Android System WebView» in the TV's Play Store, for the person to update it

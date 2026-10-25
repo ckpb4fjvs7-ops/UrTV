@@ -5,18 +5,17 @@ optimize/precheck.sh: `tv.py --batch` blocks) and prints what to tell the person
     precheck.py check < answers     the full check: prints lines, exits 0 (go on) or 3 (not an Android TV: stop)
     precheck.py report < answers    the two lines for report.md: «Device: …» and «WebView: …»
 
-The screensaver page uses `?.` and `??`, which need Chrome/WebView 80 or newer. One report had «system WebView is 66» and
-the page never ran. The page is not rewritten for old WebViews: the person updates «Android System WebView» instead.
+The screensaver page stays compatible with Chrome/WebView 66 and newer; do not use syntax or APIs introduced after Chrome 66.
 """
 import re
 import sys
 
-MIN_WEBVIEW = 80
+MIN_WEBVIEW = 66
 
 NOT_TV_AR = ("هذا الجهاز مو تلفزيون أندرويد (Android TV أو Google TV)، فتلفزيونك ما يشتغل عليه. تلفزيونات سامسونج (Tizen) "
              "وإل جي (webOS) ما تقدر تشغّل هالتطبيقات، والجوال أو التابلت مو تلفزيون. إذا عندك تلفزيون أو جهاز أندرويد تي في "
              "ثاني (ميبوكس، شاومي ستيك، كروم كاست مع Google TV…) وصّله على نفس الشبكة وجرّب عليه.")
-WEBVIEW_AR = ("نسخة «Android System WebView» في تلفزيونك قديمة ({v})، وشاشة التوقف تحتاج ٨٠ أو أحدث وإلا ما تشتغل. "
+WEBVIEW_AR = ("نسخة «Android System WebView» في تلفزيونك قديمة ({v})، وشاشة التوقف تحتاج ٦٦ أو أحدث وإلا ما تشتغل. "
               "افتح متجر Play في التلفزيون، دوّر على «Android System WebView» واضغط تحديث. وإذا تبي أفتح لك صفحته بنفسي أقدر.")
 FIRE_AR = ("هذا جهاز Fire TV من أمازون: ممكن يشتغل جزئياً، وغالباً ما يسمح بتغيير الشاشة الرئيسية (بنكمل ونقول لك وش صار).")
 
@@ -80,7 +79,7 @@ def lines(answers):
                          "no": "!! not an Android TV (no android.software.leanback)"}[k]),
            f"WebView: {wv}" + (f" ({pkg})" if pkg else "")]
     if ver is not None and ver < MIN_WEBVIEW:
-        out[1] = (f"!! WebView: system WebView is {ver} ({pkg}): the screensaver page needs {MIN_WEBVIEW} or newer (it uses ?. and ??) and "
+        out[1] = (f"!! WebView: system WebView is {ver} ({pkg}): the screensaver page needs {MIN_WEBVIEW} or newer and "
                   "would not run. Update «Android System WebView» from the Play Store")
     return out
 

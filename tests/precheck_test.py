@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""optimize/precheck.sh + precheck.py: is it an Android TV, and is the WebView 80 or newer. Canned answers of the TV (a fake
+"""optimize/precheck.sh + precheck.py: is it an Android TV, and is the WebView 66 or newer. Canned answers of the TV (a fake
 tv.py); what only a real TV can confirm is what `pm list features` and `dumpsys webviewupdate` print on each make.
 
     python3 tests/precheck_test.py
@@ -37,10 +37,9 @@ check("no features at all: stops too", rc == 3, out)
 rc, out = run_py("check", batch(TV_FEATS + "feature:amazon.hardware.fire_tv\n", "Amazon", UPD.format("com.amazon.webview.chromium", "92.0.4515.1")))
 check("Fire TV: goes on, says it may work partly and the home switch may be refused", rc == 0 and "Fire TV" in out and "may work partly" in out and "refused" in out, out)
 rc, out = run_py("check", batch(TV_FEATS, webviewupdate=UPD.format("com.google.android.webview", "66.0.3359.158")))
-check("WebView 66 (the report): goes on, a !! line, the Arabic words, the Play Store page",
-      rc == 0 and "!! WebView: system WebView is 66" in out and "Android System WebView" in out and "تحديث" in out and "webview-store" in out, out)
-rc, out = run_py("check", batch(TV_FEATS, webviews=[("com.android.webview", "79.0.3945.116")]))
-check("WebView 79 read from the package list (no webviewupdate): too old", "!! WebView" in out and "79" in out, out)
+check("WebView 66 (the report): meets the minimum", rc == 0 and "WebView: 66" in out and "!!" not in out, out)
+rc, out = run_py("check", batch(TV_FEATS, webviews=[("com.android.webview", "65.0.3945.116")]))
+check("WebView 65 read from the package list (no webviewupdate): too old", "!! WebView" in out and "65" in out, out)
 rc, out = run_py("check", batch(TV_FEATS, webviews=[("com.android.webview", "80.0.3987.162")]))
 check("WebView 80 exactly: new enough", rc == 0 and "!!" not in out and "80" in out, out)
 rc, out = run_py("check", batch(TV_FEATS, webviews=[("com.tcl.android.webview", "88.0.4324.93"), ("com.android.webview", "66.0.1")]))
@@ -51,8 +50,8 @@ rc, out = run_py("check", batch(TV_FEATS))
 check("no WebView version readable: goes on, says it could not read it", rc == 0 and "does not say" in out and "!!" not in out, out)
 rc, out = run_py("report", batch(TV_FEATS, webviewupdate=UPD.format("com.google.android.webview", "120.0.6099.144")))
 check("report lines", out.splitlines() == ["Device: Android TV / Google TV", "WebView: 120 (com.google.android.webview)"], out)
-rc, out = run_py("report", batch(TV_FEATS, webviewupdate=UPD.format("com.google.android.webview", "66.0.1")))
-check("report line for an old WebView starts with !!", out.splitlines()[1].startswith("!! WebView: system WebView is 66"), out)
+rc, out = run_py("report", batch(TV_FEATS, webviewupdate=UPD.format("com.google.android.webview", "65.0.1")))
+check("report line for an old WebView starts with !!", out.splitlines()[1].startswith("!! WebView: system WebView is 65"), out)
 rc, out = run_py("report", batch(PHONE))
 check("report line for a non-TV", out.splitlines()[0].startswith("Device: !!"), out)
 
